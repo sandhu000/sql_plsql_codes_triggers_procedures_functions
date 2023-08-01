@@ -1,0 +1,403 @@
+Procedure (p_sdate in date,p_edate date)
+  SEMI_MONTH_SHEDULE
+  id number PRIMARY KEY,
+  event_date DATE,
+  event_description VARCHAR(255),
+  location VARCHAR(100)
+  START_DATE DATE,
+  END_DATE DATE
+);
+CREATE TABLE SEMI_MONTH_SCHEDULE (
+  id NUMBER PRIMARY KEY,
+  event_date DATE,
+  event_detail VARCHAR(255),
+  city VARCHAR(100),
+  start_date DATE,
+  end_date DATE
+);
+
+1-----------12
+CREATE OR REPLACE PROCEDURE create_tables AS
+BEGIN
+  -- Create Recipe table
+  EXECUTE IMMEDIATE 'CREATE TABLE Recipe (
+    recipe_id   NUMBER PRIMARY KEY,
+    recipe_name VARCHAR2(100),
+    recipe_type VARCHAR2(50),
+    instructions CLOB
+  )';
+
+  -- Create Details table
+  EXECUTE IMMEDIATE 'CREATE TABLE Details (
+    detail_id   NUMBER PRIMARY KEY,
+    recipe_id   NUMBER,
+    ingredient  VARCHAR2(100),
+    quantity    VARCHAR2(50),
+    CONSTRAINT fk_recipe_id FOREIGN KEY (recipe_id) REFERENCES Recipe(recipe_id)
+  )';
+  
+  DBMS_OUTPUT.PUT_LINE('Tables created successfully.');
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('Error creating tables: ' || SQLERRM);
+END;
+/
+
+
+CREATE OR REPLACE PROCEDURE ShowMonthsBetweenDates AS
+  curr_date DATE;
+BEGIN
+  FOR rec IN (SELECT id, start_date, end_date, event_description, location FROM Monthly_Schedule) LOOP
+    curr_date := TRUNC(rec.start_date, 'MM');
+    
+    WHILE curr_date <= TRUNC(rec.end_date, 'MM') LOOP
+     -- INSERT INTO Monthly_Schedule (id, event_date, event_description, location, start_date, end_date, months_between)
+     -- VALUES (rec.id, curr_date, rec.event_description, rec.location, rec.start_date, rec.end_date, MONTHS_BETWEEN(curr_date, rec.end_date));
+
+      INSERT INTO Monthly_Schedule (id, start_date, end_date, event_description, location,months_between)
+VALUES (1, start_DATE('2023-01-01', 'YYYY-MM-DD'), end_DATE('2023-03-31', 'YYYY-MM-DD'), 'Event 1', 'Location 1');
+
+
+-- Add more INSERT statements as needed for additional records
+
+      
+      curr_date := ADD_MONTHS(curr_date, 1);
+    END LOOP;
+    
+    COMMIT; -- Move COMMIT inside the outer loop to commit after each record's data insertion
+  END LOOP;
+END;
+
+BEGIN
+  ShowMonthsBetweenDates;
+END;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+CREATE OR REPLACE PROCEDURE ShowMonthsBetweenDates(
+    p_start_date IN DATE,------------------VARIABLE PASS 
+    p_end_date IN DATE
+) AS
+    curr_date DATE := TRUNC(p_start_date, 'MM'); -- Truncate start date to the beginning of the month
+BEGIN
+    WHILE curr_date <= TRUNC(p_end_date, 'MM') LOOP -- Truncate end date to the beginning of the month
+    
+        DBMS_OUTPUT.PUT_LINE(TO_CHAR(curr_date, 'Day-Mon-YYYY')); -- Output the formatted month
+        curr_date := ADD_MONTHS(curr_date, 1); -- Add 1 month to the current date
+
+      
+    END LOOP;
+END;
+/
+BEGIN
+    ShowMonthsBetweenDates(DATE '2023-05-01', DATE '2023-12-31');
+
+END;
+/
+
+
+CREATE OR REPLACE PROCEDURE ShowMonthsBetweenDates AS
+  curr_date DATE;
+BEGIN
+  FOR rec IN (SELECT id, start_date, end_date, event_description, location FROM Monthly_Schedule) LOOP
+    curr_date := TRUNC(rec.start_date, 'MM');
+    
+    WHILE curr_date <= TRUNC(rec.end_date, 'MM') LOOP
+      INSERT INTO Monthly_Schedule (id, event_date, event_description, location, start_date, end_date, months_between)
+      VALUES (rec.id, curr_date, rec.event_description, rec.location, rec.start_date, rec.end_date, MONTHS_BETWEEN(curr_date, rec.end_date));
+      
+      curr_date := ADD_MONTHS(curr_date, 1);
+    END LOOP;
+  END LOOP;
+  
+  COMMIT;
+END;
+BEGIN
+  ShowMonthsBetweenDates;
+END;
+select * from Monthly_Schedule
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- CREATE OR REPLACE PROCEDURE ShowMonthsBetweenDates(
+--     p_start_date IN DATE,------------------VARIABLE PASS 
+--     p_end_date IN DATE
+-- ) AS
+--     curr_date DATE := TRUNC(p_start_date, 'MM'); -- Truncate start date to the beginning of the month
+-- BEGIN
+--     WHILE curr_date <= TRUNC(p_end_date, 'MM') LOOP -- Truncate end date to the beginning of the month
+    
+--         DBMS_OUTPUT.PUT_LINE(TO_CHAR(curr_date, 'Day-Mon-YYYY')); -- Output the formatted month
+--         curr_date := ADD_MONTHS(curr_date, 1); -- Add 1 month to the current date
+
+      
+--     END LOOP;
+-- END;
+-- /
+-- BEGIN
+--     ShowMonthsBetweenDates(DATE '2023-07-01', DATE '2023-12-31');
+
+-- END;
+-- /
+
+
+
+
+
+
+
+------------------------------------------------------------------FIRST PROCEDURE
+
+
+
+-- CREATE OR REPLACE PROCEDURE ShowMonthsBetweenDates(
+--   p_start_date DATE,
+--   p_end_date DATE
+-- ) AS
+--   curr_date DATE;
+--   v_id NUMBER;
+-- BEGIN
+--   curr_date := TRUNC(p_start_date, 'MM');
+
+--   -- Get the maximum ID from the Monthly_Schedule table
+--   SELECT COALESCE(MAX(id), 0) INTO v_id FROM Monthly_Schedule;
+
+--   -- Increment the ID if it violates the unique constraint
+--   IF v_id = 0 THEN
+--     v_id := 1;
+--   ELSE
+--     v_id := v_id + 1;
+--   END IF;
+
+--   WHILE curr_date <= TRUNC(p_end_date, 'MM') LOOP
+--     BEGIN
+--       INSERT INTO Monthly_Schedule (id, event_date, event_description, location, start_date, end_date, months_between)
+--       VALUES (
+--         v_id,
+--         curr_date,
+--         'Event 1',
+--         'Location 1',
+--         p_start_date,
+--         p_end_date,
+--         MONTHS_BETWEEN(curr_date, p_end_date)
+--       );
+--       EXCEPTION
+--         WHEN DUP_VAL_ON_INDEX THEN
+--           v_id := v_id + 1; -- Increment the ID if a unique constraint violation occurs
+--           CONTINUE; -- Skip this iteration and proceed to the next loop
+--     END;
+
+--     curr_date := ADD_MONTHS(curr_date, 1);
+--     v_id := v_id + 1; -- Increment the unique ID
+--   END LOOP;
+
+--   COMMIT;
+-- END;
+-- /
+
+
+
+-- DECLARE
+--   l_start_date DATE := DATE '2023-11-01';
+--   l_end_date DATE := DATE '2023-12-31';
+-- BEGIN
+--   ShowMonthsBetweenDates(l_start_date, l_end_date);
+--   COMMIT;
+-- END;
+-- /
+-- SELECT * FROM MONTHLY_SCHEDULE ORDER BY ID ;
+
+
+
+-----------------------------------------------------------------------------------------2ND PROCEDURE 
+
+CREATE OR REPLACE PROCEDURE ShowMonthsBetweenDates(
+  p_start_date DATE,
+  p_end_date DATE
+) AS
+  curr_date DATE;
+  v_id NUMBER;
+BEGIN
+  curr_date := TRUNC(p_start_date, 'MM');
+
+  -- Get the maximum ID from the SEMI_MONTH_SCHEDULE table
+  SELECT COALESCE(MAX(id), 0) INTO v_id FROM SEMI_MONTH_SCHEDULE;
+
+  -- Increment the ID if it violates the unique constraint
+  IF v_id = 0 THEN
+    v_id := 1;
+  ELSE
+    v_id := v_id + 1;
+  END IF;
+
+  WHILE curr_date <= TRUNC(p_end_date, 'MM') LOOP
+    BEGIN
+      INSERT INTO SEMI_MONTH_SCHEDULE (id, event_date, event_detail, city, start_date, end_date)
+      VALUES (
+        v_id,
+        curr_date,
+        'Event 54321',
+        'City 786',
+        p_start_date,
+        p_end_date
+      );
+    EXCEPTION
+      WHEN DUP_VAL_ON_INDEX THEN
+        v_id := v_id + 1; -- Increment the ID if a unique constraint violation occurs
+        CONTINUE; -- Skip this iteration and proceed to the next loop
+    END;
+
+    curr_date := ADD_MONTHS(curr_date, 1);
+    v_id := v_id + 1; -- Increment the unique ID
+  END LOOP;
+
+  COMMIT;
+END;
+/
+
+
+
+DECLARE
+  l_start_date DATE := DATE '2023-10-01';
+  l_end_date DATE := DATE '2023-12-31';
+BEGIN
+  ShowMonthsBetweenDates(l_start_date, l_end_date);
+  COMMIT;
+END;
+/
+
+select * from SEMI_MONTH_SCHEDULE order by id
+--------------------------------------------------------------------------------third procedure 
+
+
+CREATE OR REPLACE PROCEDURE ShowMonthsBetweenDates(
+  p_start_date DATE,
+  p_end_date DATE
+) AS
+  curr_date DATE;
+  v_id NUMBER;
+BEGIN
+  curr_date := TRUNC(p_start_date, 'MM');
+
+  -- Get the maximum ID from the SEMI_MONTH_SCHEDULE table
+  SELECT COALESCE(MAX(id), 0) INTO v_id FROM SEMI_MONTH_SCHEDULE;
+
+  -- Increment the ID if it violates the unique constraint
+  IF v_id = 0 THEN
+    v_id := 1;
+  ELSE
+    v_id := v_id + 1;
+  END IF;
+
+  WHILE curr_date <= TRUNC(p_end_date, 'MM') LOOP
+    BEGIN
+      INSERT INTO SEMI_MONTH_SCHEDULE (id, event_date, start_date, end_date)
+      VALUES (
+        v_id,
+        curr_date,
+        p_start_date,
+        p_end_date
+      );
+    EXCEPTION
+      WHEN DUP_VAL_ON_INDEX THEN
+        v_id := v_id + 1; -- Increment the ID if a unique constraint violation occurs
+        CONTINUE; -- Skip this iteration and proceed to the next loop
+    END;
+
+    curr_date := ADD_MONTHS(curr_date, 1);
+    v_id := v_id + 1; -- Increment the unique ID
+  END LOOP;
+
+  COMMIT;
+END;
+/
+
+
+
+DECLARE
+  l_start_date DATE := DATE '2023-10-01';
+  l_end_date DATE := DATE '2023-12-31';
+BEGIN
+  ShowMonthsBetweenDates(l_start_date, l_end_date);
+  COMMIT;
+END;
+/
+
+select * from SEMI_MONTH_SCHEDULE order by id
+
+
+--------------------------------------------------------------third procedure modify 
+
+
+DECLARE 
+    v_days NUMBER;
+    V_MONTHS NUMBER ;
+BEGIN
+    IF :P18_PROBATION_PERIOD = 'H' THEN
+        v_days := :P18_INITIAL_DURATION / 12;
+        :P18_PROJECTED_END_DATE := TO_CHAR(TO_DATE(:P18_INITIAL_START_DATE, 'DD-MON-YYYY') + v_days, 'DD-MON-YYYY');
+
+    ELSIF :P18_PROBATION_PERIOD = 'D' THEN
+        :P18_PROJECTED_END_DATE := TO_CHAR(TO_DATE(:P18_INITIAL_START_DATE, 'DD-MON-YYYY') + :P18_INITIAL_DURATION, 'DD-MON-YYYY');
+        
+    ELSIF :P18_PROBATION_PERIOD = 'W' THEN
+        v_days := :P18_INITIAL_DURATION * 7;
+        :P18_PROJECTED_END_DATE := TO_CHAR(TO_DATE(:P18_INITIAL_START_DATE, 'DD-MON-YYYY') + v_days, 'DD-MON-YYYY'); 
+
+    ELSIF :P18_PROBATION_PERIOD = 'M' THEN
+        :P18_PROJECTED_END_DATE := TO_CHAR(ADD_MONTHS(TO_DATE(:P18_INITIAL_START_DATE, 'DD-MON-YYYY'), :P18_INITIAL_DURATION), 'DD-MON-YYYY');
+    
+    ELSIF :P18_PROBATION_PERIOD = 'Y' THEN
+        V_MONTHS := :P18_INITIAL_DURATION * 12;
+        :P18_PROJECTED_END_DATE := TO_CHAR(ADD_MONTHS(TO_DATE(:P18_INITIAL_START_DATE, 'DD-MON-YYYY'), V_MONTHS), 'DD-MON-YYYY');
+    
+    ELSE
+        :P18_PROJECTED_END_DATE := NULL;
+    END IF;
+END;
+
+----------------------------------------create a probition period for year month date and days
+
+

@@ -1,0 +1,50 @@
+RECEIPE
+Receipe_ID number,
+Gendate varchar2(100),
+Purpose varchar2(100),
+Genterminal varchar2(100),
+Remarks varchar2(100)
+
+Detail
+Receipe_ID number,
+token_id number primary key,
+itemcode number,
+Description varchar2(100),
+Weight varchar2(100)
+PROCEDURE DATA_CHK_H (
+  itemname IN     VARCHAR2
+) IS
+
+err_txt           varchar2(200) ; ---------------------variables declare
+al_id             Alert; ----------------------------------variable declare
+alert_button	number ; ----------------------------------- variable declare 
+
+BEGIN
+  IF itemname IS NOT NULL THEN -------------------------------if statement check the parameter item is not null
+ If instr('*/#/%/!/^/''''/''"''/_/&/(/)/+/@/|/'' ''/?/>/</,/;/~/`',substr(itemname,1,1))  > 0 or   ------------------------insert function used to check the 15 characters of itemname each character compared individual using substring  
+    instr('*/#/%/!/^/''''/''"''/_/&/(/)/+/@/|/'' ''/?/>/</,/;/~/`',substr(itemname,2,1))  > 0 or
+    instr('*/#/%/!/^/''''/''"''/_/&/(/)/+/@/|/'' ''/?/>/</,/;/~/`',substr(itemname,3,1))  > 0 or
+    instr('*/#/%/!/^/''''/''"''/_/&/(/)/+/@/|/'' ''/?/>/</,/;/~/`',substr(itemname,4,1))  > 0 or
+    instr('*/#/%/!/^/''''/''"''/_/&/(/)/+/@/|/'' ''/?/>/</,/;/~/`',substr(itemname,5,1))  > 0 or
+    instr('*/#/%/!/^/''''/''"''/_/&/(/)/+/@/|/'' ''/?/>/</,/;/~/`',substr(itemname,6,1))  > 0 or
+    instr('*/#/%/!/^/''''/''"''/_/&/(/)/+/@/|/'' ''/?/>/</,/;/~/`',substr(itemname,7,1))  > 0 or
+    instr('*/#/%/!/^/''''/''"''/_/&/(/)/+/@/|/'' ''/?/>/</,/;/~/`',substr(itemname,8,1))  > 0 or
+    instr('*/#/%/!/^/''''/''"''/_/&/(/)/+/@/|/'' ''/?/>/</,/;/~/`',substr(itemname,9,1))  > 0 or
+    instr('*/#/%/!/^/''''/''"''/_/&/(/)/+/@/|/'' ''/?/>/</,/;/~/`',substr(itemname,10,1))  > 0 or
+    instr('*/#/%/!/^/''''/''"''/_/&/(/)/+/@/|/'' ''/?/>/</,/;/~/`',substr(itemname,11,1))  > 0 or
+    instr('*/#/%/!/^/''''/''"''/_/&/(/)/+/@/|/'' ''/?/>/</,/;/~/`',substr(itemname,12,1))  > 0 or
+    instr('*/#/%/!/^/''''/''"''/_/&/(/)/+/@/|/'' ''/?/>/</,/;/~/`',substr(itemname,13,1))  > 0 or
+    instr('*/#/%/!/^/''''/''"''/_/&/(/)/+/@/|/'' ''/?/>/</,/;/~/`',substr(itemname,14,1))  > 0 or
+    instr('*/#/%/!/^/''''/''"''/_/&/(/)/+/@/|/'' ''/?/>/</,/;/~/`',substr(itemname,15,1))  > 0 
+
+then -------------------------- if any resurved character found in reserved character then block
+   err_txt := ('Reserved Characters such as(* # % ! ^ '' "  ~ ` ; , _ & () + @ |? > < and space) not allowed in this Context. Try to use only A-Z and 0-9' ) ; ------------------------alert display message 
+
+       al_id := Find_Alert('a_errors'); 
+       Set_Alert_Property(al_id, alert_message_text, err_txt ); --------------set alert function is used to set the text of the alert ----error message stored in err_txt
+       alert_button := Show_Alert(al_id) ; ------------function stored to display the alert result stored in alert button 
+      --  raise form_trigger_failure ;------------this statement if executed trigger failure in form used appropariate action in form 
+end if ;
+END IF ;
+
+END ;

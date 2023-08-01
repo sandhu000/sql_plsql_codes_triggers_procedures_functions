@@ -1,0 +1,24 @@
+begin
+     case :APEX$ROW_STATUS
+     when 'I' then -- Note: In EA2 this has been changed from I to C for consistency with Tabular Forms
+         insert into SALE_DTL ( SALE_ID, SALE_DTL_PK,	INSTALMENT_NO,	PAY_DATE,   INST_DUE_DATE,	INST_AMT, 	PAY_STATUS,	CREATED_DATE, 
+	                            CREATED_BY )
+         values ( :SALE_ID, :SALE_DTL_PK,	:INSTALMENT_NO,	:PAY_DATE,   :INST_DUE_DATE,	:INST_AMT, 	:PAY_STATUS,	TO_CHAR(SYSDATE,'DD-MM-RR'), :APP_USER)
+         returning rowid into :ROWID;
+     when 'U' then
+         update SALE_DTL SET 
+          SALE_ID =  :SALE_ID, 
+          SALE_DTL_PK = :SALE_DTL_PK,
+          INSTALMENT_NO  =  :INSTALMENT_NO,
+          PAY_DATE = :PAY_DATE,
+          INST_DUE_DATE = :INST_DUE_DATE,
+          INST_AMT  =  :INST_AMT,
+          PAY_STATUS =  :PAY_STATUS,
+          UPDATED_DATE  = TO_CHAR(SYSDATE,'DD-MM-RR'),
+          UPDATED_BY = :APP_USER
+          where rowid  = :ROWID;
+     when 'D' then
+         delete SALE_DTL
+         where rowid = :ROWID;
+     end case;
+end;

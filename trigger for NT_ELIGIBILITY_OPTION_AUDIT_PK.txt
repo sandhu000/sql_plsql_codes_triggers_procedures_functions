@@ -1,0 +1,21 @@
+CREATE OR REPLACE EDITIONABLE TRIGGER "NT_ELIGIBILITY_OPTION_AUDIT_PK" 
+before
+insert or update or delete on "NT_ELIGIBILITY_OPTION"
+for each row
+begin
+    
+   if inserting then
+      if :NEW.ID is null then
+         SELECT NVL(MAX(A.ID),0)+1 INTO :NEW.ID FROM  
+NT_ELIGIBILITY_OPTION A ;
+      end if;
+           :NEW.CREATED_DATE    := localtimestamp;
+           :NEW.CREATED_BY := nvl(v('APP_USER'),USER);
+   end if;
+   if inserting or updating then
+      :NEW.UPDATED_DATE    := localtimestamp;
+      :NEW.UPDATED_BY := nvl(v('APP_USER'),USER);
+   end if;
+   
+   
+end;

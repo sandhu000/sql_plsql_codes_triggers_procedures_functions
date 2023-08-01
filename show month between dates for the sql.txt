@@ -1,0 +1,27 @@
+1:10 PM
+CREATE OR REPLACE PROCEDURE ShowMonthsBetweenDates(
+  p_start_date DATE,
+  p_end_date DATE
+) AS
+  curr_date DATE;
+BEGIN
+  curr_date := TRUNC(p_start_date, 'MM');
+
+  WHILE curr_date <= TRUNC(p_end_date, 'MM') LOOP
+    
+    INSERT INTO Monthly_Schedule (id, event_date, event_description, location, start_date, end_date, months_between)
+VALUES (
+  1,
+  TO_DATE('2023-01-01', 'YYYY-MM-DD'),
+  'Event 1',
+  'Location 1',
+  TO_DATE('2023-01-01', 'YYYY-MM-DD'),
+  TO_DATE('2023-03-31', 'YYYY-MM-DD'),
+  MONTHS_BETWEEN(TO_DATE('2023-01-01', 'YYYY-MM-DD'), TO_DATE('2023-03-31', 'YYYY-MM-DD'))
+);
+
+
+    curr_date := ADD_MONTHS(curr_date, 1);
+  END LOOP;
+
+  COMMIT;

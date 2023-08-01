@@ -1,0 +1,10 @@
+apex.region( "R1" ).widget().interactiveGrid( "getActions" ).invoke( "selection-add-row" );
+
+
+
+
+Muhammad, 4:47 AM
+*****Delete Row IG*****
+apex.region( "R1" ).widget().interactiveGrid( "getActions" ).invoke( "selection-delete" );
+*****Save IG*****
+apex.region( "R1" ).widget().interactiveGrid( "getActions" ).invoke( "save" );

@@ -1,0 +1,46 @@
+begin
+    
+     case :APEX$ROW_STATUS
+         when 'I' then -- Note: In EA2 this has been changed from I to C for consistency with Tabular Forms
+         insert into PROJECT_TASK (PROJECT_ID,MILESTONE_ID,DISCRIPTION,ASSIGNEE,Start_Date,END_DATE)
+         values (:P6_ID,:MILESTONE_ID,:DISCRIPTION,:ASSIGNEE,:Start_Date,:END_DATE)
+         returning ID into :ID;
+         when 'U' then
+         update PROJECT_TASK
+         set 
+             PROJECT_ID = :P6_ID,
+             MILESTONE_ID = :MILESTONE_ID,
+             DISCRIPTION = :DISCRIPTION,
+             ASSIGNEE = :ASSIGNEE,
+             Start_Date = :Start_Date,
+             END_DATE = :END_DATE
+
+             where ID = :ID;
+         when 'D' then
+         delete PROJECT_TASK
+         where ID = :ID;
+     end case;
+     END;
+begin
+    case :APEX$ROW_STATUS
+        when 'I' then -- Note: In EA2 this has been changed from I to C for consistency with Tabular Forms
+            insert into SHOW_ROOM_UPDATES (PRODUCT_ID, CLIENT_ORDER, CONTACT, EMAIL, START_DATE, PIC_UP_DATE, DATE_OF_ASSIGN, PLACE_ORDER_#)
+            values (:P9_ID, :PRODUCT_ID, :CLIENT_ORDER, :CONTACT, :EMAIL, :START_DATE, :PIC_UP_DATE, :DATE_OF_ASSIGN, :PLACE_ORDER_#)
+            returning ID into :ID;
+        when 'U' then
+            update SHOW_ROOM_UPDATES
+            set 
+                PROJECT_ID = :P9_ID,
+                CLIENT_ORDER = :CLIENT_ORDER,
+                CONTACT = :CONTACT,
+                EMAIL = :EMAIL,
+                START_DATE = :START_DATE,
+                PIC_UP_DATE = :PIC_UP_DATE,
+                DATE_OF_ASSIGN = :DATE_OF_ASSIGN,
+                PLACE_ORDER_# = :PLACE_ORDER_#
+            where ID = :ID;
+        when 'D' then
+            delete from SHOW_ROOM_UPDATES
+            where ID = :ID;
+    end case;
+end;

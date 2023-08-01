@@ -1,0 +1,4 @@
+<button type="button" title="Delete" aria-label="Delete" class="t-Button t-Button--noLabel t-Button--icon t-Button--small t-Button--danger t-Button--noUI deleterecord js-actionButton" data-action="row-delete" ><span aria-hidden="true" class="t-Icon fa fa-trash-o"></span></button>
+<button type="button" class="a-Button a-Button--noLabel a-Button--iconTextButton t-Button--primary t-Button--noUI js-actionButton revertBtn" data-action="row-revert" title="Revert">
+<span class="fa fa-undo"></span>
+</button> 

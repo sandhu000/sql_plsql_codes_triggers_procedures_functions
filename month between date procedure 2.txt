@@ -1,0 +1,16 @@
+CREATE OR REPLACE PROCEDURE ShowMonthsBetweenDates AS
+  curr_date DATE;
+BEGIN
+  FOR rec IN (SELECT id, start_date, end_date, event_description, location FROM Monthly_Schedule) LOOP
+    curr_date := TRUNC(start_date, 'MM');
+    
+    WHILE curr_date <= TRUNC(end_date, 'MM') LOOP
+      INSERT INTO Monthly_Schedule (id, event_date, event_description, location, start_date, end_date, months_between)
+      VALUES (id, curr_date, event_description, location, start_date, end_date, MONTHS_BETWEEN(curr_date, end_date));
+      
+      curr_date := ADD_MONTHS(curr_date, 1);
+    END LOOP;
+  END LOOP;
+  
+  COMMIT;
+END;

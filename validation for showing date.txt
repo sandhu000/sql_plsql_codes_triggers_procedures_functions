@@ -1,0 +1,15 @@
+DECLARE
+  v_num NUMBER := 0;
+BEGIN
+  SELECT COUNT(*)
+ INTO v_num
+  FROM D_TAX_RATE_DETAIL
+  WHERE (FROM_DATE, TO_DATED) OVERLAPS (to_date(:P16_FROM_DATE, 'DD/MM/RRRR'), to_date(:P16_TO_DATED, 'DD/MM/RRRR'))
+  AND Upper(APPLIED_ON) = Upper(:P16_APPLIED_ON);
+
+  IF v_num > 0 THEN
+    RETURN 'You have entered a repeating from date and to date';
+  END IF;
+
+  RETURN NULL; -- If no validation error, return NULL.
+END;

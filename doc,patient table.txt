@@ -1,0 +1,17 @@
+doctor 
+doc_id number primary key,
+doc_department varchar2(100),
+doc_email varchar2(100),
+doc_contact varchar2(100),
+doc_salary number
+patient
+pa_id number primary key,
+doc_id number,------------------forign key
+pa_department varchar2(100),
+pa_contact number,
+pa_email varchar(100),
+pa_disease varchar2(100)
+
+
+<span class="t-Icon fa fa-eye" aria-hidden="true"></span><span class="t-Button-label">MASTER FORM</span>
+class="t-Button t-Button--icon t-Button--success t-Button--iconRIGHT"

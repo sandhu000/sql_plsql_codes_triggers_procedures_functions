@@ -1,0 +1,57 @@
+begin
+    
+     case :APEX$ROW_STATUS
+         when 'I' then -- Note: In EA2 this has been changed from I to C for consistency with Tabular Forms
+         insert into BC_EHT_SETTING_DTL ( MST_ID,DUE_DATE,DUE_AMOUNT,REMIT_AMOUNT,CHEQUE_NO,CHEQUE_DATE)
+         values (:P165_ID,:DUE_DATE,replace(:DUE_AMOUNT,',',''),replace(:REMIT_AMOUNT,',',''),:CHEQUE_NO,:CHEQUE_DATE)
+         returning ID into :ID;
+         when 'U' then
+         update BC_EHT_SETTING_DTL
+         set 
+             DUE_DATE = :DUE_DATE,
+             DUE_AMOUNT = replace(:DUE_AMOUNT,',',''),
+             REMIT_AMOUNT = replace(:REMIT_AMOUNT,',',''),
+             CHEQUE_NO = :CHEQUE_NO,
+             CHEQUE_DATE = :CHEQUE_DATE
+             where ID = :ID;
+         when 'D' then
+         delete BC_EHT_SETTING_DTL
+         where ID = :ID;
+     end case;
+
+begin
+    
+     case :APEX$ROW_STATUS
+         when 'C' then -- Note: In EA2 this has been changed from I to C for consistency with Tabular Forms
+         insert into STU (UNI_ID,STUD_ID,NAME,ADDRESS,CONTACT)
+         values (:P6_UNI_ID,:STUD_ID,:NAME,:ADDRESS,:CONTACT)
+         returning STUD_ID into :STUD_ID;
+         when 'U' then
+         update STU
+         set 
+             STUD_ID = :STUD_ID,
+            ADDRESS = :ADDRESS,
+             CONTACT = :CONTACT,
+             NAME = :NAME
+             where STUD_ID = :STUD_ID;
+         when 'D' then
+         delete STU
+         where STUD_ID = :STUD_ID;
+     end case;
+     END;
+SELECT TO_CHAR(CURRENT_TIMESTAMP,' DD-MONTH-YYYY HH24:MI:SSAM ') "DATE & TIME " FROM DUAL;
+if :P48_CUST_NO is null then
+return 'custno should not be null';
+end if;
+
+
+DECLARE
+DAYOFWEEK VARCHAR2(100);
+BEGIN
+SELECT TO_CHAR(TO_DATE(:Detail Submitting date,'YYYY-MM-DD'), 'FMDAY')INTO DAYOFWEEK FROM DUAL;
+IF DAYOFWEEK = 'MONDAT','TUESDAT','WEDNESSDAY' THEN 
+RETURN TRUE;
+ELSE 
+RETURN FALSE;
+END IF;
+
