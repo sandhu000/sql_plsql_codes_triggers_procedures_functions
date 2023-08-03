@@ -1,0 +1,58 @@
+CREATE OR REPLACE PROCEDURE ShowMonthsOfYear(
+  p_month NUMBER,
+  p_year NUMBER,
+  p_date DATE
+) AS
+  curr_date DATE;
+  v_id NUMBER; 
+BEGIN
+  IF p_month < 1 OR p_month > 12 THEN
+    RAISE_APPLICATION_ERROR(-20001, 'Invalid month provided');
+  END IF;
+
+  curr_date := ADD_MONTHS(TRUNC(p_date, 'MM'), 1); -- Start from the next month
+
+  SELECT COALESCE(MAX(id), 0) INTO v_id FROM Monthly_Schedule;
+
+  IF v_id = 0 THEN
+    v_id := 1;
+  ELSE
+    v_id := v_id + 1;
+  END IF;
+
+  WHILE EXTRACT(YEAR FROM curr_date) = EXTRACT(YEAR FROM p_date) LOOP -- Loop for the specified year
+    BEGIN
+      INSERT INTO Monthly_Schedule (id, event_date, event_description, location, start_date, end_date, months_between)
+      VALUES (
+        v_id,
+        curr_date,
+        'Event 1',
+        'Location 1',
+        TRUNC(curr_date, 'MONTH'),
+        LAST_DAY(TRUNC(curr_date, 'MONTH')),
+        MONTHS_BETWEEN(TRUNC(p_date, 'MM'), curr_date)
+      );
+      v_id := v_id + 1; 
+
+    EXCEPTION
+      WHEN DUP_VAL_ON_INDEX THEN
+        v_id := v_id + 1; 
+        CONTINUE; 
+    END;
+
+    curr_date := ADD_MONTHS(curr_date, 1);
+  END LOOP;
+
+  COMMIT;
+END;
+/
+
+
+
+BEGIN
+  ShowMonthsOfYear(7, 2023, TO_DATE('2023-01-31', 'YYYY-MM-DD')); -- For July 2023
+END;
+/
+
+SELECT * FROM MONTHLY_SCHEDULE order by id;
+DELETE FROM MONTHLY_SCHEDULE
