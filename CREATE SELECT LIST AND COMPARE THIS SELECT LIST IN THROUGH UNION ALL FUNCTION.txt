@@ -1,0 +1,36 @@
+SELECT 'Pay Average Daily wage plus 1.5 x employee wage rate for all hours worked' AS D, 'GHPHW' AS R FROM dual 
+                     UNION ALL                    
+  SELECT 'Pay regular wages including overtime (if applicable) Plus Provide a future day off with payment of average' AS D, 'RWSDO' AS R 
+                  FROM dual
+                  UNION ALL                    
+  SELECT 'Entitled to 1.5 x wage rate for all hours worked' AS D, 'RWSDO' AS R 
+                      FROM dual
+                 UNION ALL
+             
+ SELECT 'Entitled to average daily wage' AS D, 'RWSDO' AS R 
+                  FROM dual
+                 UNION ALL
+                 
+  SELECT 'One day holiday paid at the average daily wage if the general holiday falls during the employee annual vacation' AS D, 'RWSDO' AS R 
+                  FROM dual
+                 UNION ALL
+                 
+SELECT 'No Holiday pay' AS D, 'RWSDO' AS R 
+                   FROM dual
+                 UNION ALL
+                
+SELECT 'Premium Pay for hours worked' AS D, 'RWSDO' AS R 
+                  FROM dual
+                 UNION ALL
+                 
+SELECT 'Treat holiday as a regular day, and provide a deferred holiday' AS D, 'RWSDO' AS R 
+                   FROM dual
+                 UNION ALL
+               
+SELECT '8 hours multiplied by hourly Rate plus Day off' AS D, 'RWSDO' AS R 
+                  FROM dual
+                 UNION ALL
+                 
+SELECT 'Regular earnings plus Day off' AS D, 'RWSDO' AS R 
+                  FROM dual;
+
