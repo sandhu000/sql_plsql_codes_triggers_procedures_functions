@@ -7,4 +7,18 @@ Muhammad, 4:47 AM
 *****Delete Row IG*****
 apex.region( "R1" ).widget().interactiveGrid( "getActions" ).invoke( "selection-delete" );
 *****Save IG*****
+
+
+
+******close******
 apex.region( "R1" ).widget().interactiveGrid( "getActions" ).invoke( "save" );
+apex.region("R1").widget().interactiveGrid("getActions").invoke("selection-delete", {
+    success: function(data) {
+        // Row deleted successfully, now close the row
+        apex.region("R1").widget().interactiveGrid("getActions").invoke("selection-closeRow");
+    },
+    error: function(xhr, status, errorThrown) {
+        // Handle error if delete action fails
+        console.error("Error deleting row: " + errorThrown);
+    }
+});
