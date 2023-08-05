@@ -1,0 +1,55 @@
+DATE 5-AUGUST-2023
+CREATE OR REPLACE PROCEDURE ShowDaysOfYear(
+  p_year NUMBER
+) AS
+  curr_date DATE;
+  v_id NUMBER;
+  day_of_year NUMBER;
+BEGIN
+  curr_date := TO_DATE(p_year || '-01-01', 'YYYY-MM-DD'); -- Start from the first day of the year
+  day_of_year := 1; -- Initialize day of the year
+
+  WHILE EXTRACT(YEAR FROM curr_date) = p_year AND curr_date < TO_DATE((p_year + 1) || '-01-01', 'YYYY-MM-DD') LOOP
+    BEGIN
+      SELECT COALESCE(MAX(id), 0) INTO v_id FROM Monthly_Schedule;
+
+      IF v_id = 0 THEN
+        v_id := 1;
+      ELSE
+        v_id := v_id + 1;
+      END IF;
+
+      INSERT INTO Monthly_Schedule (id, event_date, event_description, location, start_date, end_date, day_of_year)
+      VALUES (
+        v_id,
+        curr_date,
+        'Event 1',
+        'Location 1',
+        curr_date,                           -- Start of the day
+        curr_date + INTERVAL '1' DAY - INTERVAL '1' SECOND, -- End of the day
+        day_of_year
+      );
+
+      curr_date := curr_date + INTERVAL '1' DAY; -- Move to the next day
+      day_of_year := day_of_year + 1; -- Increment day of the year
+    EXCEPTION
+      WHEN DUP_VAL_ON_INDEX THEN
+        v_id := v_id + 1; 
+        CONTINUE; 
+    END;
+  END LOOP;
+
+  COMMIT;
+END;
+/
+
+
+
+
+BEGIN
+  ShowDaysOfYear(2023);
+END;
+/
+
+select * from monthly_schedule order by id;
+delete from monthly_schedule
