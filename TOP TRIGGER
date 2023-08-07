@@ -1,0 +1,18 @@
+DATE 7-AUG-2023
+create trigger "DEPARTMENT_T"
+BEFORE
+insert or update on "DEPARTMENT"
+for each row
+begin
+if inserting then
+      if :NEW.DEPT_ID is null then
+         SELECT NVL(MAX(A.DEPT_ID),0)+1 INTO :NEW.DEPT_ID FROM  DEPARTMENT A ;
+      end if;
+           :NEW.GENDATE    := localtimestamp;
+           :NEW.GENUSERID := nvl(v('APP_USER'),USER);
+   end if;
+   if inserting or updating then
+      :NEW.LASTUPDATE    := localtimestamp;
+      :NEW.UPDUSERID := nvl(v('APP_USER'),USER);
+   end if;
+end;
