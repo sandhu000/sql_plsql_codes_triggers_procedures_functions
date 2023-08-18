@@ -1,0 +1,22 @@
+if :P352_LIST_ID is null then
+  K_UTFORM.p_pagination(
+      a_tab_name => 'TAX_CATEGORY_M',
+      a_col_name1 => 'TAX_CODE', 
+      a_col_value1 => :P352_TAX_CODE,
+      a_first => :P352_FIRST_REC,
+      a_last => :P352_LAST_REC,
+      a_previous => :P352_PREV_REC,
+      a_next => :P352_NEXT_REC,
+      a_count => :P352_TOTAL_REC
+    );
+else -- list
+  K_UTFORM.p_pagination(
+      a_list_id => :P352_LIST_ID,
+      a_key_value1 => :P352_TAX_CODE,
+      a_first => :P352_FIRST_REC,
+      a_last => :P352_LAST_REC,
+      a_previous => :P352_PREV_REC,
+      a_next => :P352_NEXT_REC,
+      a_count => :P352_TOTAL_REC
+    );
+end if;
