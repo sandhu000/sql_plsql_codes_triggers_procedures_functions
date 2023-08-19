@@ -1,0 +1,5 @@
+  $('input').on('focus', function() {
+$("#"+this.id).css("background-color", "#0db5f2");
+}).on('blur', function() {
+$("#"+this.id).css("background-color", "white");
+});
