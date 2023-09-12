@@ -16,3 +16,15 @@ if inserting then
       :NEW.UPDUSERID := nvl(v('APP_USER'),USER);
    end if;
 end;
+---------------------------------------------------------------------------------------------------------------------------------
+create or replace TRIGGER "DEPARTMENT_T"
+BEFORE INSERT OR UPDATE OR DELETE ON "DEPARTMENT"
+FOR EACH ROW
+BEGIN
+   IF INSERTING THEN
+      IF :NEW.D_ID IS NULL THEN
+         SELECT NVL(MAX(A.D_ID), 0) + 1 INTO :NEW.D_ID FROM DEPARTMENT A;
+      END IF;
+   END IF;
+END;
+/
